@@ -100,12 +100,16 @@ class RCUList
             current = head;
             // this loop gets me to the unsorted part of the list
             int count = 0;
-            while (current != nullptr && count < startPoint)
+            while (count < startPoint)
             {
                 current = current->next;
                 largest = current;
                 stop = current;
                 ++count;
+                if (current == nullptr) // then stop your done
+                {
+                    return;
+                }
             }
             //this loop finds the largest number in the list
             while (current != nullptr)
