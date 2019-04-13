@@ -95,6 +95,8 @@ class RCUList
         node *current = head;
         while (current != nullptr)
         {
+            largest = head;
+            current = head;
             // this loop gets me to the unsorted part of the list
             int count = 0;
             while (current != nullptr && count < startPoint)
