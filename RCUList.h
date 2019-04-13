@@ -93,7 +93,8 @@ class RCUList
         int startPoint = 0;
         node *largest = head;
         node *current = head;
-        while (current != nullptr)
+        node *stop = head;
+        while (stop != nullptr)
         {
             largest = head;
             current = head;
@@ -103,6 +104,7 @@ class RCUList
             {
                 current = current->next;
                 largest = current;
+                stop = current;
                 ++count;
             }
             //this loop finds the largest number in the list
