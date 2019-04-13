@@ -126,8 +126,10 @@ class RCUList
             //deletes the old node
             //      probably block for a grace period here to make sure list
             //integrity is maintained
-            largest->last->next = largest->next;
-            largest->next->last = largest->last;
+            if (largest->last != nullptr)
+                largest->last->next = largest->next;
+            if (largest->next != nullptr)
+                largest->next->last = largest->last;
             myFree(largest);
             std::cout << ++startPoint << std::endl;
         }
