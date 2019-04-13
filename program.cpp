@@ -126,23 +126,47 @@ void ValidateList()
 }
 int main(int argc, char *argv[])
 {
+    if (g_print_level > 1)
+    {
+        std::cout << "Calling process args" << std::endl;
+    }
     ProcessArgs(argc, argv);
     items = new int[g_size];
+    missCount = new int[g_size];
+    readCount = new int[g_size];
 
     for (int i = 0; i < g_size; i++)
     {
         items[i] = rand();
         list.insert_at_beginning(items[i]);
     }
+    if (g_print_level > 1)
+    {
+        std::cout << "Calling start timing" << std::endl;
+    }
     // create a thread that sorts the list
     startTiming();
     list.sort();
+    if (g_print_level > 1)
+    {
+        std::cout << "Calling end Timing" << std::endl;
+    }
     endTiming();
     // create reader threads that read until the sort is done
     //      pick random element of the array
     //      lookup the element
     //      inc if there was a miss
+    if (g_print_level > 1)
+    {
+        std::cout << "Calling validate list" << std::endl;
+    }
     ValidateList();
+    if (g_print_level > 1)
+    {
+        std::cout << "Calling output stats" << std::endl;
+    }
     OutputStats();
     delete[] items;
+    delete[] missCount;
+    delete[] readCount;
 }
