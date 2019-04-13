@@ -150,9 +150,10 @@ class RCUList
                     largest->next->last = largest->last;
                 myFree(largest);
             }
+            ++startPoint;
             if (debugPrintLevel > 2)
             {
-                std::cout << ++startPoint << std::endl;
+                std::cout << startPoint << std::endl;
             }
         }
     }
