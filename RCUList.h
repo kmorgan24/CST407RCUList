@@ -99,6 +99,7 @@ class RCUList
             while (current != nullptr && count < startPoint)
             {
                 current = current->next;
+                largest = current;
                 ++count;
             }
             //this loop finds the largest number in the list
