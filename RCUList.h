@@ -50,6 +50,7 @@ class RCUList
             head->last = temp;
             head = temp;
         }
+        std::cout << head->data << std::endl;
     }
 
     void insert_at_end(int input)
@@ -122,15 +123,18 @@ class RCUList
             }
 
             //moves it to the front
-            insert_at_beginning(largest->data);
-            //deletes the old node
-            //      probably block for a grace period here to make sure list
-            //integrity is maintained
-            if (largest->last != nullptr)
-                largest->last->next = largest->next;
-            if (largest->next != nullptr)
-                largest->next->last = largest->last;
-            myFree(largest);
+            if (largest != head) // there is no point in moving it
+            {
+                insert_at_beginning(largest->data);
+                //deletes the old node
+                //      probably block for a grace period here to make sure list
+                //integrity is maintained
+                if (largest->last != nullptr)
+                    largest->last->next = largest->next;
+                if (largest->next != nullptr)
+                    largest->next->last = largest->last;
+                myFree(largest);
+            }
             std::cout << ++startPoint << std::endl;
         }
     }
