@@ -1,6 +1,6 @@
 #pragma once
 #include "stdlib.h"
-
+#include <stdio>
 typedef struct node
 {
     int data;
@@ -125,7 +125,7 @@ class RCUList
             largest->last->next = largest->next;
             largest->next->last = largest->last;
             myFree(largest);
-            ++startPoint;
+            std::cout << ++startPoint << std::endl;
         }
     }
 
