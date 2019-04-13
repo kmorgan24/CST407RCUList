@@ -23,6 +23,7 @@ void ValidateList()
     bool listCorrect = true;
     int current = 0;
     int last = list.remove_from_beginning();
+    ++itemCount;
     if (g_print_level > 0)
     {
         std::cout << last << std::endl;
