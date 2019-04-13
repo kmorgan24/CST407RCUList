@@ -75,18 +75,22 @@ class RCUList
     int remove_from_beginning()
     {
         node *temp = head;
+        int rval = head->data;
         if (head->next != nullptr)
             head->next->last = nullptr;
         head = head->next;
         myFree(temp);
+        return rval;
     }
 
     int remove_from_end()
     {
         node *temp = tail;
+        int rval = tail->data;
         tail->last->next = nullptr;
         tail = tail->last;
         myFree(temp);
+        return rval;
     }
 
     void sort()
