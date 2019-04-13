@@ -1,17 +1,47 @@
 #include "RCUList.h"
+#include "stdlib.h"
+#include "unistd.h"
 #include <random>
 #include <iostream>
 int g_size = 10;
 int g_threads = 1;
+int g_print_level = 0;
+
 long g_start_time = 0;
 long g_end_time = 0;
-int g_print_level = 1;
+
 int *missCount;
 int *readCount;
 int *items;
 RCUList list;
 void ProcessArgs(int argc, char *argv[])
 {
+    int opt;
+    while ((opt = getopt(argc, argv, "s:n:h:p:")) != -1)
+    {
+        switch (opt)
+        {
+        case 'h':
+            printf("%s\n"
+                   "-h print this help message and exit\n"
+                   "-s <start tree size>\n"
+                   "-n <number of threads>\n"
+                   "-p <print level>\n",
+                   argv[0]);
+            exit(1);
+        case 's':
+            // size
+            g_size = atoi(optarg);
+            break;
+        case 'n':
+            // nthreads
+            g_threads = atoi(optarg);
+            break;
+        case 'p':
+            g_print_level = atoi(optarg);
+            break;
+        }
+    }
 }
 void OutputStats()
 {

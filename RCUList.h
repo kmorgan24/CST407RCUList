@@ -12,12 +12,20 @@ class RCUList
 {
     node *head;
     node *tail;
+    int debugPrintLevel;
 
   public:
     RCUList()
     {
         head = nullptr;
         tail = head;
+        debugPrintLevel = 0;
+    }
+    RCUList(int print_level)
+    {
+        head = nullptr;
+        tail = head;
+        debugPrintLevel = print_level;
     }
     bool listnotempty()
     {
@@ -50,7 +58,10 @@ class RCUList
             head->last = temp;
             head = temp;
         }
-        std::cout << head->data << std::endl;
+        if (debugPrintLevel > 1)
+        {
+            std::cout << head->data << std::endl;
+        }
     }
 
     void insert_at_end(int input)
@@ -139,7 +150,10 @@ class RCUList
                     largest->next->last = largest->last;
                 myFree(largest);
             }
-            std::cout << ++startPoint << std::endl;
+            if (debugPrintLevel > 2)
+            {
+                std::cout << ++startPoint << std::endl;
+            }
         }
     }
 
