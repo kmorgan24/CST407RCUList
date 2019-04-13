@@ -3,6 +3,10 @@
 #include "unistd.h"
 #include <random>
 #include <iostream>
+#include <stdint.h>
+#include <time.h>
+#include <sys/time.h>
+
 int g_size = 10;
 int g_threads = 1;
 int g_print_level = 0;
@@ -45,6 +49,33 @@ void ProcessArgs(int argc, char *argv[])
 }
 void OutputStats()
 {
+    long time = g_end_time - g_start_time;
+    long reads = 0;
+    long misses = 0;
+    for (int i = 0; i < g_size; i++)
+    {
+        reads += readCount[i];
+    }
+    for (int j = 0; j < g_size; j++)
+    {
+        misses += missCount[j];
+    }
+
+    std::cout << "Sort Time: " << time << std::endl;
+    std::cout << "Reads/Sec: " << reads / time << std::endl;
+    std::cout << "Misses: " << misses << std::endl;
+}
+inline void startTiming()
+{
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    g_start_time = now.tv_sec;
+}
+inline void endTiming()
+{
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    g_end_time = now.tv_sec;
 }
 void ValidateList()
 {
@@ -104,7 +135,9 @@ int main(int argc, char *argv[])
         list.insert_at_beginning(items[i]);
     }
     // create a thread that sorts the list
+    startTiming();
     list.sort();
+    endTiming();
     // create reader threads that read until the sort is done
     //      pick random element of the array
     //      lookup the element
