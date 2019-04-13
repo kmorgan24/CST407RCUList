@@ -74,7 +74,8 @@ class RCUList
     int remove_from_beginning()
     {
         node *temp = head;
-        head->next->last = nullptr;
+        if (head->next != nullptr)
+            head->next->last = nullptr;
         head = head->next;
         myFree(temp);
     }
