@@ -11,7 +11,7 @@ typedef struct node
     node *next;
     node *last;
 } node;
-static void myFree(void*);
+static void myFree(void *);
 class RCUList
 {
     node *head;
@@ -24,12 +24,14 @@ class RCUList
         head = nullptr;
         tail = head;
         debugPrintLevel = 0;
+        rcu_init();
     }
     RCUList(int print_level)
     {
         head = nullptr;
         tail = head;
         debugPrintLevel = print_level;
+        rcu_init();
     }
     bool listnotempty()
     {
@@ -175,7 +177,6 @@ class RCUList
     }
 
   protected:
-
 };
 static void myFree(void *n)
 {

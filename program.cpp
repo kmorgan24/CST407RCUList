@@ -148,6 +148,8 @@ void ValidateList()
 }
 void ReadThreadFunc(int threadNum)
 {
+    urcu_memb_register_thread();
+
     int target = 0;
     while (g_sorting)
     {
@@ -158,6 +160,7 @@ void ReadThreadFunc(int threadNum)
         }
         readCount[threadNum]++;
     }
+    urcu_memb_unregister_thread();
 }
 
 void WriteThreadFunc()
