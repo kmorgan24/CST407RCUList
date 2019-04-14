@@ -102,10 +102,10 @@ class RCUList
 
     int remove_from_end()
     {
-        node *temp = tail;
+        node *temp = rcu_dereference(tail);
         int rval = tail->data;
-        tail->last->next = nullptr;
-        tail = tail->last;
+        rcu_assign_pointer(tail->last->next, nullptr);
+        rcu_assign_pointer(tail, tail->last);
         urcu_memb_defer_rcu(&myFree, temp);
         return rval;
     }
@@ -113,20 +113,20 @@ class RCUList
     void sort()
     {
         int startPoint = 0;
-        node *largest = head;
-        node *current = head;
-        node *stop = head;
+        node *largest = rcu_dereference(head);
+        node *current = rcu_dereference(head);
+        node *stop = rcu_dereference(head);
         while (stop != nullptr)
         {
-            largest = head;
-            current = head;
+            largest = rcu_dereference(head);
+            current = rcu_dereference(head);
             // this loop gets me to the unsorted part of the list
             int count = 0;
             while (count < startPoint)
             {
-                current = current->next;
-                largest = current;
-                stop = current;
+                rcu_assign_pointer(current, current->next);
+                rcu_assign_pointer(largest, current);
+                rcu_assign_pointer(stop, current);
                 ++count;
                 if (current == nullptr) // then stop your done
                 {
@@ -149,6 +149,7 @@ class RCUList
                 insert_at_beginning(largest->data);
                 //deletes the old node
                 //      probably block for a grace period here to make sure list
+                synchronize_rcu();
                 //integrity is maintained
                 if (largest->last != nullptr)
                     largest->last->next = largest->next;
@@ -166,7 +167,7 @@ class RCUList
 
     bool lookup(int target)
     {
-        //rcu_read_lock(); //maybe dont exsit and more
+        rcu_memb_read_lock(); //maybe dont exsit any more
         bool rval = false;
         node *current = head;
         while (current != nullptr)
@@ -175,7 +176,7 @@ class RCUList
                 rval = true;
             current = current->next;
         }
-        //rcu_read_unlock();
+        rcu_memb_read_unlock();
         return rval;
     }
 
