@@ -51,6 +51,7 @@ void OutputStats()
 {
     long time = g_end_time - g_start_time;
     long reads = 0;
+    double readspersec = 0;
     long misses = 0;
     for (int i = 0; i < g_size; i++)
     {
@@ -60,9 +61,17 @@ void OutputStats()
     {
         misses += missCount[j];
     }
+    if (time != 0)
+    {
+        readspersec = reads / time;
+    }
+    else
+    {
+        readspersec = reads;
+    }
 
     std::cout << "Sort Time: " << time << std::endl;
-    std::cout << "Reads/Sec: " << reads / time << std::endl;
+    std::cout << "Reads/Sec: " << readspersec << std::endl;
     std::cout << "Misses: " << misses << std::endl;
 }
 inline void startTiming()
