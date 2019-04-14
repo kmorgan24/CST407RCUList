@@ -70,12 +70,20 @@ inline void startTiming()
     struct timeval now;
     gettimeofday(&now, NULL);
     g_start_time = now.tv_sec;
+    if (g_print_level > 1)
+    {
+        std::cout << "start Time: " << g_start_time << endl;
+    }
 }
 inline void endTiming()
 {
     struct timeval now;
     gettimeofday(&now, NULL);
     g_end_time = now.tv_sec;
+    if (g_print_level > 1)
+    {
+        std::cout << "end Time: " << g_end_time << endl;
+    }
 }
 void ValidateList()
 {
