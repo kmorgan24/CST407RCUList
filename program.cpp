@@ -151,7 +151,7 @@ void ReadThreadFunc(int threadNum)
     int target = 0;
     while (g_sorting)
     {
-        target = items[randr() % g_size];
+        target = items[rand_r() % g_size];
         if (!list.lookup(target))
         {
             missCount[threadNum]++;
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
     // create a thread that sorts the list
     std::thread wThread(WriteThreadFunc);
     // create reader threads that read until the sort is done
-    std::thread *readers = new std::thread[g_threads];
+    std::thread **readers = new std::thread *[g_threads];
     for (int i = 0; i < g_threads; i++)
     {
         readers[0] = new std::thread(ReadThreadFunc, i);
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
     //      inc if there was a miss
     for (int i = 0; i < g_threads; i++)
     {
-        readers[0].join();
+        readers[0]->join();
     }
     if (g_print_level > 1)
     {
