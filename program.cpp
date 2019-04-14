@@ -206,6 +206,7 @@ int main(int argc, char *argv[])
     //      pick random element of the array
     //      lookup the element
     //      inc if there was a miss
+    wThread.join();
     for (int i = 0; i < g_threads; i++)
     {
         readers[0]->join();
