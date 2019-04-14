@@ -84,8 +84,8 @@ class RCUList
             temp->last = tail;
             temp->data = input;
 
-            tail->next = temp;
-            tail = temp;
+            rcu_assign_pointer(tail->next, temp);
+            rcu_assign_pointer(tail, temp);
         }
     }
 
@@ -93,9 +93,9 @@ class RCUList
     {
         node *temp = head;
         int rval = head->data;
-        if (head->next != nullptr)
-            head->next->last = nullptr;
-        head = head->next;
+        if (rcu_dereference(head->next) != nullptr)
+            rcu_assign_pointer(head->next->last, nullptr);
+        rcu_assign_pointer(head, head->next);
         urcu_memb_defer_rcu(&myFree, temp);
         return rval;
     }
@@ -166,7 +166,7 @@ class RCUList
 
     bool lookup(int target)
     {
-        rcu_read_lock();
+        //rcu_read_lock(); //maybe dont exsit and more
         bool rval = false;
         node *current = head;
         while (current != nullptr)
@@ -175,7 +175,7 @@ class RCUList
                 rval = true;
             current = current->next;
         }
-        rcu_read_unlock();
+        //rcu_read_unlock();
         return rval;
     }
 
