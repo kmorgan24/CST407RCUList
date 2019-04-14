@@ -6,8 +6,9 @@
 #include <stdint.h>
 #include <time.h>
 #include <sys/time.h>
+#include <thread>
 
-int g_size = 10;
+int g_size = 15000;
 int g_threads = 1;
 int g_print_level = 0;
 
@@ -17,7 +18,11 @@ long g_end_time = 0;
 int *missCount;
 int *readCount;
 int *items;
+
 RCUList list;
+
+bool g_sorting = false;
+
 void ProcessArgs(int argc, char *argv[])
 {
     int opt;
@@ -141,6 +146,37 @@ void ValidateList()
         std::cout << "list is NOT Correct" << std::endl;
     }
 }
+void ReadThreadFunc(int threadNum)
+{
+    int target = 0;
+    while (g_sorting)
+    {
+        target = items[randr() % g_size];
+        if (!list.lookup(target))
+        {
+            missCount[threadNum]++;
+        }
+        readCount[threadNum]++;
+    }
+}
+
+void WriteThreadFunc()
+{
+    if (g_print_level > 1)
+    {
+        std::cout << "Calling start timing" << std::endl;
+    }
+    g_sorting = true;
+    startTiming();
+    list.sort();
+    g_sorting = false;
+    if (g_print_level > 1)
+    {
+        std::cout << "Calling end Timing" << std::endl;
+    }
+    endTiming();
+}
+
 int main(int argc, char *argv[])
 {
     if (g_print_level > 1)
@@ -157,22 +193,23 @@ int main(int argc, char *argv[])
         items[i] = rand();
         list.insert_at_beginning(items[i]);
     }
-    if (g_print_level > 1)
-    {
-        std::cout << "Calling start timing" << std::endl;
-    }
+
     // create a thread that sorts the list
-    startTiming();
-    list.sort();
-    if (g_print_level > 1)
-    {
-        std::cout << "Calling end Timing" << std::endl;
-    }
-    endTiming();
+    std::thread wThread(WriteThreadFunc);
     // create reader threads that read until the sort is done
+    std::thread *readers = new std::thread[g_threads];
+    for (int i = 0; i < g_threads; i++)
+    {
+        readers[0] = new std::thread(ReadThreadFunc, i);
+    }
+
     //      pick random element of the array
     //      lookup the element
     //      inc if there was a miss
+    for (int i = 0; i < g_threads; i++)
+    {
+        readers[0].join();
+    }
     if (g_print_level > 1)
     {
         std::cout << "Calling validate list" << std::endl;
