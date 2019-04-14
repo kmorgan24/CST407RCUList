@@ -151,7 +151,7 @@ void ReadThreadFunc(int threadNum)
     int target = 0;
     while (g_sorting)
     {
-        target = items[rand_r() % g_size];
+        target = items[rand_r(&threadNum) % g_size];
         if (!list.lookup(target))
         {
             missCount[threadNum]++;
