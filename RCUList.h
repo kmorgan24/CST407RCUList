@@ -1,6 +1,10 @@
 #pragma once
 #include "stdlib.h"
 #include <iostream>
+#define _LGPL_SOURCE
+#define URCU_INLINE_SMALL_FUNCTIONS
+#include <urcu/urcu-memb.h>
+
 typedef struct node
 {
     int data;
@@ -90,7 +94,7 @@ class RCUList
         if (head->next != nullptr)
             head->next->last = nullptr;
         head = head->next;
-        myFree(temp);
+        urcu_memb_defer_rcu(myFree, temp);
         return rval;
     }
 
@@ -100,7 +104,7 @@ class RCUList
         int rval = tail->data;
         tail->last->next = nullptr;
         tail = tail->last;
-        myFree(temp);
+        urcu_memb_defer_rcu(myFree, temp);
         return rval;
     }
 
@@ -148,7 +152,7 @@ class RCUList
                     largest->last->next = largest->next;
                 if (largest->next != nullptr)
                     largest->next->last = largest->last;
-                myFree(largest);
+                urcu_memb_defer_rcu(myFree, largest);
             }
             ++startPoint;
             if (debugPrintLevel > 2)
@@ -171,7 +175,7 @@ class RCUList
     }
 
   protected:
-    void myFree(node *n)
+    void myFree(void *n)
     {
         free(n);
     }
