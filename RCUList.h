@@ -149,7 +149,7 @@ class RCUList
                 insert_at_beginning(largest->data);
                 //deletes the old node
                 //      probably block for a grace period here to make sure list
-                synchronize_rcu();
+                urcu_memb_synchronize_rcu();
                 //integrity is maintained
                 if (largest->last != nullptr)
                     largest->last->next = largest->next;
@@ -167,7 +167,7 @@ class RCUList
 
     bool lookup(int target)
     {
-        rcu_memb_read_lock(); //maybe dont exsit any more
+        urcu_memb_read_lock(); //maybe dont exsit any more
         bool rval = false;
         node *current = head;
         while (current != nullptr)
@@ -176,7 +176,7 @@ class RCUList
                 rval = true;
             current = current->next;
         }
-        rcu_memb_read_unlock();
+        urcu_memb_read_unlock();
         return rval;
     }
 
