@@ -43,15 +43,15 @@ class RCUList
     }
     void insert_at_beginning(int input)
     {
-        if (head == nullptr)
+        if (rcu_dereference(head) == nullptr)
         {
             node *temp;
             temp = (node *)malloc(sizeof(node));
             temp->next = nullptr;
             temp->last = nullptr;
             temp->data = input;
-            head = temp;
-            tail = temp;
+            rcu_assign_pointer(head, temp);
+            rcu_assign_pointer(tail, temp);
         }
         else
         {
@@ -61,8 +61,8 @@ class RCUList
             temp->last = nullptr;
             temp->data = input;
 
-            head->last = temp;
-            head = temp;
+            rcu_assign_pointer(head->last, temp);
+            rcu_assign_pointer(head, temp);
         }
         if (debugPrintLevel > 1)
         {
