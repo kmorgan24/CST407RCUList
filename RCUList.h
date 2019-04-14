@@ -24,14 +24,14 @@ class RCUList
         head = nullptr;
         tail = head;
         debugPrintLevel = 0;
-        rcu_init();
+        //rcu_init();
     }
     RCUList(int print_level)
     {
         head = nullptr;
         tail = head;
         debugPrintLevel = print_level;
-        rcu_init();
+        //rcu_init();
     }
     bool listnotempty()
     {
@@ -166,14 +166,17 @@ class RCUList
 
     bool lookup(int target)
     {
+        rcu_read_lock();
+        bool rval = false;
         node *current = head;
         while (current != nullptr)
         {
             if (current->data == target)
-                return true;
+                rval = true;
             current = current->next;
         }
-        return false;
+        rcu_read_unlock();
+        return rval;
     }
 
   protected:
