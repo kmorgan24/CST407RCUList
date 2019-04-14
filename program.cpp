@@ -72,7 +72,7 @@ inline void startTiming()
     g_start_time = now.tv_sec;
     if (g_print_level > 1)
     {
-        std::cout << "start Time: " << g_start_time << endl;
+        std::cout << "start Time: " << g_start_time << std::endl;
     }
 }
 inline void endTiming()
@@ -82,7 +82,7 @@ inline void endTiming()
     g_end_time = now.tv_sec;
     if (g_print_level > 1)
     {
-        std::cout << "end Time: " << g_end_time << endl;
+        std::cout << "end Time: " << g_end_time << std::endl;
     }
 }
 void ValidateList()
