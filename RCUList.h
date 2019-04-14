@@ -11,7 +11,7 @@ typedef struct node
     node *next;
     node *last;
 } node;
-
+static void myFree(void*);
 class RCUList
 {
     node *head;
@@ -94,7 +94,7 @@ class RCUList
         if (head->next != nullptr)
             head->next->last = nullptr;
         head = head->next;
-        urcu_memb_defer_rcu(myFree, temp);
+        urcu_memb_defer_rcu(&myFree, temp);
         return rval;
     }
 
@@ -104,7 +104,7 @@ class RCUList
         int rval = tail->data;
         tail->last->next = nullptr;
         tail = tail->last;
-        urcu_memb_defer_rcu(myFree, temp);
+        urcu_memb_defer_rcu(&myFree, temp);
         return rval;
     }
 
@@ -152,7 +152,7 @@ class RCUList
                     largest->last->next = largest->next;
                 if (largest->next != nullptr)
                     largest->next->last = largest->last;
-                urcu_memb_defer_rcu(myFree, largest);
+                urcu_memb_defer_rcu(&myFree, largest);
             }
             ++startPoint;
             if (debugPrintLevel > 2)
@@ -175,8 +175,9 @@ class RCUList
     }
 
   protected:
-    void myFree(void *n)
-    {
-        free(n);
-    }
+
 };
+static void myFree(void *n)
+{
+    free(n);
+}
