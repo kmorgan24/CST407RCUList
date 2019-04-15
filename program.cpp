@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
     std::thread **readers = new std::thread *[g_threads];
     for (int i = 0; i < g_threads; i++)
     {
-        readers[0] = new std::thread(ReadThreadFunc, i);
+        readers[i] = new std::thread(ReadThreadFunc, i);
     }
 
     //      pick random element of the array
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
     wThread.join();
     for (int i = 0; i < g_threads; i++)
     {
-        readers[0]->join();
+        readers[i]->join();
     }
     if (g_print_level > 1)
     {
