@@ -149,11 +149,11 @@ void ValidateList()
 void ReadThreadFunc(int threadNum)
 {
     urcu_memb_register_thread();
-
+ int threadident = threadNum;
     int target = 0;
     while (g_sorting)
     {
-        target = items[rand_r((unsigned int *)&threadNum) % g_size];
+        target = items[rand_r((unsigned int *)&threadident) % (g_size-1)];
         if (!list.lookup(target))
         {
             missCount[threadNum]++;

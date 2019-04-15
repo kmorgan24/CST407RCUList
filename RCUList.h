@@ -47,7 +47,7 @@ class RCUList
         {
             std::cout << "insert at begining " << input << std::endl;
         }
-        if (rcu_dereference(head) == nullptr)
+        if ((head) == nullptr)
         {
             node *temp;
             temp = (node *)malloc(sizeof(node));
@@ -122,17 +122,17 @@ class RCUList
         }
 
         int startPoint = 0;
-        node *largest = rcu_dereference(head);
+        node *largest = (head);
         if (debugPrintLevel > 3)
         {
             std::cout << "largest*" << largest << std::endl;
         }
-        node *current = rcu_dereference(head);
+        node *current = (head);
         if (debugPrintLevel > 3)
         {
             std::cout << "current*" << current << std::endl;
         }
-        node *stop = rcu_dereference(head);
+        node *stop = (head);
         if (debugPrintLevel > 3)
         {
             std::cout << "stop*" << stop << std::endl;
@@ -143,8 +143,8 @@ class RCUList
         }
         while (stop != nullptr)
         {
-            largest = rcu_dereference(head);
-            current = rcu_dereference(head);
+            largest = (head);
+            current = (head);
             // this loop gets me to the unsorted part of the list
             int count = 0;
             if (debugPrintLevel > 2)
@@ -189,7 +189,7 @@ class RCUList
                     largest->last->next = largest->next;
                 if (largest->next != nullptr)
                     largest->next->last = largest->last;
-                urcu_memb_defer_rcu(&myFree, largest);
+               // urcu_memb_defer_rcu(&myFree, largest);
             }
             ++startPoint;
             if (debugPrintLevel > 2)
