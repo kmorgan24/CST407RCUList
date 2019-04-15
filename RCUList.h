@@ -133,7 +133,7 @@ class RCUList
             int count = 0;
             if (debugPrintLevel > 2)
             {
-                std::cout << "advancing to the unsorted part of the list" /
+                std::cout << "advancing to the unsorted part of the list"
                           << std::endl;
             }
             while (count < startPoint)
