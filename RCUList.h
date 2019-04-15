@@ -43,6 +43,10 @@ class RCUList
     }
     void insert_at_beginning(int input)
     {
+        if (debugPrintLevel > 3)
+        {
+            std::cout << "insert at begining " << input << std::endl;
+        }
         if (rcu_dereference(head) == nullptr)
         {
             node *temp;
@@ -119,8 +123,20 @@ class RCUList
 
         int startPoint = 0;
         node *largest = rcu_dereference(head);
+        if (debugPrintLevel > 3)
+        {
+            std::cout << "largest*" << largest << std::endl;
+        }
         node *current = rcu_dereference(head);
+        if (debugPrintLevel > 3)
+        {
+            std::cout << "current*" << current << std::endl;
+        }
         node *stop = rcu_dereference(head);
+        if (debugPrintLevel > 3)
+        {
+            std::cout << "stop*" << stop << std::endl;
+        }
         if (debugPrintLevel > 2)
         {
             std::cout << "starting outer while" << std::endl;

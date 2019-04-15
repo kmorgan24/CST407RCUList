@@ -200,8 +200,16 @@ int main(int argc, char *argv[])
     }
 
     // create a thread that sorts the list
+    if (g_print_level > 2)
+    {
+        std::cout << "creating write thread" << std::endl;
+    }
     std::thread wThread(WriteThreadFunc);
     // create reader threads that read until the sort is done
+    if (g_print_level > 2)
+    {
+        std::cout << "creating read threads" << std::endl;
+    }
     std::thread **readers = new std::thread *[g_threads];
     for (int i = 0; i < g_threads; i++)
     {
