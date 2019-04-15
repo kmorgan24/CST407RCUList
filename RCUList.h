@@ -11,7 +11,7 @@ typedef struct node
     node *next;
     node *last;
 } node;
-static void myFree(void *);
+
 class RCUList
 {
     node *head;

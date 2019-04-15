@@ -76,7 +76,7 @@ void OutputStats()
     }
 
     std::cout << "Sort Time: " << time << std::endl;
-    std::cout << "Reads/Sec: " << readspersec << "seconds" << std::endl;
+    std::cout << "Reads/Sec: " << readspersec << " seconds" << std::endl;
     std::cout << "Misses: " << misses << std::endl;
 }
 inline void startTiming()
