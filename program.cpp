@@ -165,6 +165,7 @@ void ReadThreadFunc(int threadNum)
 
 void WriteThreadFunc()
 {
+    urcu_memb_register_thread();
     if (g_print_level > 1)
     {
         std::cout << "Calling start timing" << std::endl;
@@ -178,6 +179,7 @@ void WriteThreadFunc()
         std::cout << "Calling end Timing" << std::endl;
     }
     endTiming();
+    urcu_memb_unregister_thread();
 }
 
 int main(int argc, char *argv[])
