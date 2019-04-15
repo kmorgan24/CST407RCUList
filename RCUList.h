@@ -167,7 +167,7 @@ class RCUList
                 {
                     std::cout << "about to mem sync" << std::endl;
                 }
-                urcu_memb_synchronize_rcu();
+                // urcu_memb_synchronize_rcu();
                 //integrity is maintained
                 if (largest->last != nullptr)
                     largest->last->next = largest->next;
