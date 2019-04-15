@@ -237,5 +237,10 @@ int main(int argc, char *argv[])
     delete[] items;
     delete[] missCount;
     delete[] readCount;
+    for (int i = 0; i < g_threads; i++)
+    {
+        delete readers[i];
+    }
+
     delete[] readers;
 }
