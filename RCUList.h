@@ -100,17 +100,21 @@ class RCUList
         if ((head->next) != nullptr)
             rcu_assign_pointer(head->next->last, nullptr);
         rcu_assign_pointer(head, head->next);
+        urcu_memb_synchronize_rcu();
         //urcu_memb_defer_rcu(&myFree, temp);
+        free(temp);
         return rval;
     }
 
     int remove_from_end()
     {
-        node *temp = rcu_dereference(tail);
+        node *temp = (tail);
         int rval = tail->data;
         rcu_assign_pointer(tail->last->next, nullptr);
         rcu_assign_pointer(tail, tail->last);
-        urcu_memb_defer_rcu(&myFree, temp);
+        urcu_memb_synchronize_rcu();
+        //urcu_memb_defer_rcu(&myFree, temp);
+        free(temp);
         return rval;
     }
 
@@ -183,12 +187,14 @@ class RCUList
                 {
                     std::cout << "about to mem sync" << std::endl;
                 }
-                // urcu_memb_synchronize_rcu();
+                urcu_memb_synchronize_rcu();
                 //integrity is maintained
                 if (largest->last != nullptr)
                     largest->last->next = largest->next;
                 if (largest->next != nullptr)
                     largest->next->last = largest->last;
+                urcu_memb_synchronize_rcu();
+                free(temp);
                 // urcu_memb_defer_rcu(&myFree, largest);
             }
             ++startPoint;
