@@ -76,7 +76,7 @@ void OutputStats()
     }
 
     std::cout << "Sort Time: " << time << std::endl;
-    std::cout << "Reads/Sec: " << readspersec << std::endl;
+    std::cout << "Reads/Sec: " << readspersec << "seconds" << std::endl;
     std::cout << "Misses: " << misses << std::endl;
 }
 inline void startTiming()
@@ -166,33 +166,21 @@ void ReadThreadFunc(int threadNum)
 void WriteThreadFunc()
 {
     urcu_memb_register_thread();
-    if (g_print_level > 1)
-    {
-        std::cout << "Calling start timing" << std::endl;
-    }
     g_sorting = true;
     startTiming();
     list.sort();
     g_sorting = false;
-    if (g_print_level > 1)
-    {
-        std::cout << "Calling end Timing" << std::endl;
-    }
     endTiming();
     urcu_memb_unregister_thread();
 }
 
 int main(int argc, char *argv[])
 {
-    if (g_print_level > 1)
-    {
-        std::cout << "Calling process args" << std::endl;
-    }
     ProcessArgs(argc, argv);
     items = new int[g_size];
     missCount = new int[g_size];
     readCount = new int[g_size];
-
+    //populate the data
     for (int i = 0; i < g_size; i++)
     {
         items[i] = rand();
@@ -200,39 +188,19 @@ int main(int argc, char *argv[])
     }
 
     // create a thread that sorts the list
-    if (g_print_level > 2)
-    {
-        std::cout << "creating write thread" << std::endl;
-    }
     std::thread wThread(WriteThreadFunc);
     // create reader threads that read until the sort is done
-    if (g_print_level > 2)
-    {
-        std::cout << "creating read threads" << std::endl;
-    }
     std::thread **readers = new std::thread *[g_threads];
     for (int i = 0; i < g_threads; i++)
     {
         readers[i] = new std::thread(ReadThreadFunc, i);
     }
-
-    //      pick random element of the array
-    //      lookup the element
-    //      inc if there was a miss
     wThread.join();
     for (int i = 0; i < g_threads; i++)
     {
         readers[i]->join();
     }
-    if (g_print_level > 1)
-    {
-        std::cout << "Calling validate list" << std::endl;
-    }
     ValidateList();
-    if (g_print_level > 1)
-    {
-        std::cout << "Calling output stats" << std::endl;
-    }
     OutputStats();
     delete[] items;
     delete[] missCount;

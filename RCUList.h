@@ -24,14 +24,12 @@ class RCUList
         head = nullptr;
         tail = head;
         debugPrintLevel = 0;
-        //rcu_init();
     }
     RCUList(int print_level)
     {
         head = nullptr;
         tail = head;
         debugPrintLevel = print_level;
-        //rcu_init();
     }
     bool listnotempty()
     {
@@ -43,10 +41,6 @@ class RCUList
     }
     void insert_at_beginning(int input)
     {
-        if (debugPrintLevel > 3)
-        {
-            std::cout << "insert at begining " << input << std::endl;
-        }
         if ((head) == nullptr)
         {
             node *temp;
@@ -101,7 +95,7 @@ class RCUList
             rcu_assign_pointer(head->next->last, nullptr);
         rcu_assign_pointer(head, head->next);
         urcu_memb_synchronize_rcu();
-        //urcu_memb_defer_rcu(&myFree, temp);
+
         free(temp);
         return rval;
     }
@@ -113,49 +107,23 @@ class RCUList
         rcu_assign_pointer(tail->last->next, nullptr);
         rcu_assign_pointer(tail, tail->last);
         urcu_memb_synchronize_rcu();
-        //urcu_memb_defer_rcu(&myFree, temp);
+
         free(temp);
         return rval;
     }
 
     void sort()
     {
-        if (debugPrintLevel > 2)
-        {
-            std::cout << "starting sort" << std::endl;
-        }
-
         int startPoint = 0;
         node *largest = (head);
-        if (debugPrintLevel > 3)
-        {
-            std::cout << "largest*" << largest << std::endl;
-        }
         node *current = (head);
-        if (debugPrintLevel > 3)
-        {
-            std::cout << "current*" << current << std::endl;
-        }
         node *stop = (head);
-        if (debugPrintLevel > 3)
-        {
-            std::cout << "stop*" << stop << std::endl;
-        }
-        if (debugPrintLevel > 2)
-        {
-            std::cout << "starting outer while" << std::endl;
-        }
         while (stop != nullptr)
         {
             largest = (head);
             current = (head);
             // this loop gets me to the unsorted part of the list
             int count = 0;
-            if (debugPrintLevel > 2)
-            {
-                std::cout << "advancing to the unsorted part of the list"
-                          << std::endl;
-            }
             while (count < startPoint)
             {
                 rcu_assign_pointer(current, current->next);
@@ -183,19 +151,15 @@ class RCUList
                 insert_at_beginning(largest->data);
                 //deletes the old node
                 //      probably block for a grace period here to make sure list
-                if (debugPrintLevel > 2)
-                {
-                    std::cout << "about to mem sync" << std::endl;
-                }
-                urcu_memb_synchronize_rcu();
                 //integrity is maintained
+                urcu_memb_synchronize_rcu();
+
                 if (largest->last != nullptr)
                     largest->last->next = largest->next;
                 if (largest->next != nullptr)
                     largest->next->last = largest->last;
                 urcu_memb_synchronize_rcu();
                 free(largest);
-                // urcu_memb_defer_rcu(&myFree, largest);
             }
             ++startPoint;
             if (debugPrintLevel > 2)
@@ -222,7 +186,3 @@ class RCUList
 
   protected:
 };
-static void myFree(void *n)
-{
-    free(n);
-}
