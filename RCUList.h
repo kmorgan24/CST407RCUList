@@ -194,7 +194,7 @@ class RCUList
                 if (largest->next != nullptr)
                     largest->next->last = largest->last;
                 urcu_memb_synchronize_rcu();
-                free(temp);
+                free(largest);
                 // urcu_memb_defer_rcu(&myFree, largest);
             }
             ++startPoint;
