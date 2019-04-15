@@ -100,7 +100,7 @@ class RCUList
         if ((head->next) != nullptr)
             rcu_assign_pointer(head->next->last, nullptr);
         rcu_assign_pointer(head, head->next);
-        urcu_memb_defer_rcu(&myFree, temp);
+        //urcu_memb_defer_rcu(&myFree, temp);
         return rval;
     }
 
