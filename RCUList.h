@@ -97,7 +97,7 @@ class RCUList
     {
         node *temp = head;
         int rval = head->data;
-        if (rcu_dereference(head->next) != nullptr)
+        if ((head->next) != nullptr)
             rcu_assign_pointer(head->next->last, nullptr);
         rcu_assign_pointer(head, head->next);
         urcu_memb_defer_rcu(&myFree, temp);
@@ -189,7 +189,7 @@ class RCUList
                     largest->last->next = largest->next;
                 if (largest->next != nullptr)
                     largest->next->last = largest->last;
-               // urcu_memb_defer_rcu(&myFree, largest);
+                // urcu_memb_defer_rcu(&myFree, largest);
             }
             ++startPoint;
             if (debugPrintLevel > 2)
