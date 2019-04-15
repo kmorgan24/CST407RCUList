@@ -112,16 +112,30 @@ class RCUList
 
     void sort()
     {
+        if (debugPrintLevel > 2)
+        {
+            std::cout << "starting sort" << std::endl;
+        }
+
         int startPoint = 0;
         node *largest = rcu_dereference(head);
         node *current = rcu_dereference(head);
         node *stop = rcu_dereference(head);
+        if (debugPrintLevel > 2)
+        {
+            std::cout << "starting outer while" << std::endl;
+        }
         while (stop != nullptr)
         {
             largest = rcu_dereference(head);
             current = rcu_dereference(head);
             // this loop gets me to the unsorted part of the list
             int count = 0;
+            if (debugPrintLevel > 2)
+            {
+                std::cout << "advancing to the unsorted part of the list" /
+                          << std::endl;
+            }
             while (count < startPoint)
             {
                 rcu_assign_pointer(current, current->next);
@@ -149,6 +163,10 @@ class RCUList
                 insert_at_beginning(largest->data);
                 //deletes the old node
                 //      probably block for a grace period here to make sure list
+                if (debugPrintLevel > 2)
+                {
+                    std::cout << "about to mem sync" << std::endl;
+                }
                 urcu_memb_synchronize_rcu();
                 //integrity is maintained
                 if (largest->last != nullptr)
